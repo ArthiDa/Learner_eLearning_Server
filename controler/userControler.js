@@ -155,6 +155,14 @@ const addCourse = asyncHandler(async (req, res) => {
   res.json(newCourse);
 });
 const getCourses = asyncHandler(async (req, res) => {
+  const { search } = req.query;
+  if (search) {
+    const search_courses = await Course.find({
+      tittle: { $regex: `.*${search}.*`, $options: "i" },
+    });
+    res.json(search_courses);
+    return;
+  }
   const courses = await Course.find({});
   res.json(courses);
 });
@@ -285,10 +293,10 @@ const userUpdate = asyncHandler(async (req, res) => {
   res.json(result);
 });
 const getStatus = asyncHandler(async (req, res) => {
-  const users = await (await User.find({})).length;
-  const reviews = await (await Review.find({})).length;
-  const enrolls = await (await Enrol.find({})).length;
-  const courses = await (await Course.find({})).length;
+  const users = (await User.find({})).length;
+  const reviews = (await Review.find({})).length;
+  const enrolls = (await Enrol.find({})).length;
+  const courses = (await Course.find({})).length;
   res.json({ users, reviews, enrolls, courses });
 });
 module.exports = {
